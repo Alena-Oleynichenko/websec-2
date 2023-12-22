@@ -18,21 +18,21 @@ def parser(url):
     page_raw = get_from(url)
     page_raw = re.sub("\n", " ", page_raw)
 
-    # title
+   
     title = re.search("<h2 class=\"h2-text info-block__title\">(.*?)</h2>", page_raw)
     data['title'] = title.group(1).strip()
 
-    # weeks
-    weeks = [int(num) for num in re.findall("(\d{1,2}) неделя", page_raw)]
+  
+    weeks = [int(num) for num in re.findall("(\\d{1,2}) неделя", page_raw)]
     data['weeks'] = weeks
 
-    # days dates
-    head_dates = re.findall("schedule__head-date.*?(\d{2}\.\d{2}\.\d{4})", page_raw)
+
+    head_dates = re.findall("schedule__head-date.*?(\\d{2}\.\\d{2}\.\\d{4})", page_raw)
     data['dates'] = head_dates
 
-    # weekday nav items
+   
     weekdays = re.findall(
-        "class=\"weekday-nav__item (weekday-nav__item_active|) \" ><div class=\"caption-text weekday-nav__item-weekday\"> ([а-я]+)</div><div class=\"subtitle-text weekday-nav__item-date\"> ([\d]+)",
+        "class=\"weekday-nav__item (weekday-nav__item_active|)\" ><div class=\"caption-text weekday-nav__item-weekday\"> ([а-я]+)<div class=\"subtitle-text weekday-nav__item-date\"> ([\\d]+)",
         page_raw)
     print(weekdays)
     for i in range(len(weekdays)):
@@ -42,13 +42,13 @@ def parser(url):
     data['weekdays'] = weekdays
 
     data['rows'] = []
-    # lessons timespans
-    time_spans = re.findall("\"schedule__time\".*?(\d\d:\d\d).*?(\d\d:\d\d)", page_raw)
+    
+    time_spans = re.findall("\"schedule__time\".*?(\\d\\d:\\d\\d).*?(\\d\\d:\\d\\d)", page_raw)
     for t in time_spans:
         data['rows'].append({'timespan': t})
 
-    # cells
-    lesson_group = "(lesson-color-type-(\d)\">([а-яА-Я ё-]+)</div><div class=\"caption-text schedule__place\">([а-яА-ЯA-Z ё\d-]*)</div>(?:<div class=\"schedule__teacher\"> *(?:<a class=\"caption-text\" href=\".*?(\?staffId=\d+)\" >|)([\.а-яА-ЯA-Z ё\d-]*)|))"
+
+    lesson_group = "(lesson-color-type-(\\d)\">([а-яА-Я ё-]+)</div><div class=\"caption-text schedule__place\">([а-яА-ЯA-Z ё\\d-]*)</div>(?:<div class=\"schedule__teacher\"> *(?:<a class=\"caption-text\" href=\".*?(\?staffId=\\d+)\" >|)([\.а-яА-ЯA-Z ё\\d-]*)|))"
     items = re.findall(
         "<div class=\"schedule__item (schedule__item_show|)\">(.*?)</div>(?=<div class=\"schedule__item|</div></div></div></div><div class=\"footer\">)",
         page_raw)
@@ -67,7 +67,7 @@ def parser(url):
         for j in range(len(head_dates)):
             data['rows'][i]['items'].append(cells[i * len(head_dates) + j])
 
-    # print(dumps(data, indent=4, ensure_ascii=False))
+
 
     with open("schedule.json", "w", encoding='utf-8') as f:
         dump(data, f, indent=4, ensure_ascii=False)
