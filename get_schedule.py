@@ -27,7 +27,7 @@ def parser(url):
     data['weeks'] = weeks
 
 
-    head_dates = re.findall("schedule__head-date.*?(\\d{2}\.\\d{2}\.\\d{4})", page_raw)
+    head_dates = re.findall("schedule__head-date\.\?(\\d{2}\.\\d{2}\.\\d{4})", page_raw)
     data['dates'] = head_dates
 
    
@@ -48,7 +48,7 @@ def parser(url):
         data['rows'].append({'timespan': t})
 
 
-    lesson_group = "(lesson-color-type-(\\d)\">([а-яА-Я ё-]+)</div><div class=\"caption-text schedule__place\">([а-яА-ЯA-Z ё\\d-]*)</div>(?:<div class=\"schedule__teacher\"> *(?:<a class=\"caption-text\" href=\".*?(\?staffId=\\d+)\" >|)([\.а-яА-ЯA-Z ё\\d-]*)|))"
+    lesson_group = "(lesson-color-type-(\\d)\">([а-яА-Я ё-]+)</div><div class=\"caption-text schedule__place\">([а-яА-ЯA-Z ё\\d-]*)</div>(?:<div class=\"schedule__teacher\"> *(?:<a class=\"caption-text\" href=\".*?(?staffId=\\d+)\" >|)([\.а-яА-ЯA-Z ё\\d-]*)|))"
     items = re.findall(
         "<div class=\"schedule__item (schedule__item_show|)\">(.*?)</div>(?=<div class=\"schedule__item|</div></div></div></div><div class=\"footer\">)",
         page_raw)
